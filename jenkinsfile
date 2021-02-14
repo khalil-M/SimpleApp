@@ -1,20 +1,23 @@
-
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage ('Build and run generator') {
             steps {
-                echo 'Building..'
+                sh 'g++ generate.cpp -o generate'
+                sh 'chmod u=x generate'
+                sh './generate'
             }
         }
-        stage('Test') {
-            steps {
-                echo 'Testing..'
+        stage ('Build and run search engine'){
+            steps{
+                sh 'g++ search.cpp -o search'
+                sh 'chmod u=x search'
+                sh './search'
             }
         }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
+        stage ('Running tests'){
+            steps{
+                sh 'if cmp -s RES.txt OUT.txt ; then echo SUCESS ; else exit 1 ; fi'
             }
         }
     }
